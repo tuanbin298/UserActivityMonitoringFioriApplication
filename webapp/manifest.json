@@ -27,9 +27,7 @@
         "uri": "/sap/opu/odata4/sap/zsb_audit/srvd/sap/zsd_auth/0001/",
         "type": "OData",
         "settings": {
-          "annotations": [
-            "annotation"
-          ],
+          "annotations": ["annotation"],
           "localUri": "localService/mainService/metadata.xml",
           "odataVersion": "4.0"
         }

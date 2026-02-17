@@ -1,35 +1,40 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <title>User Activity Monitoring Fiori Application</title>
     <style>
-        html, body, body > div, #container, #container-uiarea {
-            height: 100%;
-        }
+      html,
+      body,
+      body > div,
+      #container,
+      #container-uiarea {
+        height: 100%;
+      }
     </style>
     <script
-        id="sap-ui-bootstrap"
-        src="resources/sap-ui-core.js"
-        data-sap-ui-theme="sap_horizon"
-        data-sap-ui-resource-roots='{
+      id="sap-ui-bootstrap"
+      src="resources/sap-ui-core.js"
+      data-sap-ui-theme="sap_horizon"
+      data-sap-ui-resource-roots='{
             "useraudit": "./"
         }'
-        data-sap-ui-on-init="module:sap/ui/core/ComponentSupport"
-        data-sap-ui-compat-version="edge"
-        data-sap-ui-async="true"
-        data-sap-ui-frame-options="trusted"
+      data-sap-ui-on-init="module:sap/ui/core/ComponentSupport"
+      data-sap-ui-compat-version="edge"
+      data-sap-ui-async="true"
+      data-sap-ui-frame-options="trusted"
     ></script>
-</head>
-<body class="sapUiBody sapUiSizeCompact" id="content">
+  </head>
+
+  <body class="sapUiBody sapUiSizeCompact" id="content">
     <div
-        data-sap-ui-component
-        data-name="useraudit"
-        data-id="container"
-        data-settings='{"id" : "useraudit"}'
-        data-handle-validation="true"
+      data-sap-ui-component
+      data-name="useraudit"
+      data-id="container"
+      data-settings='{"id" : "useraudit"}'
+      data-handle-validation="true"
     ></div>
-</body>
+  </body>
 </html>
