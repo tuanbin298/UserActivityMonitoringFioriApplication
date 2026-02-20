@@ -1,3 +1,111 @@
-<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:macros="sap.fe.macros" xmlns:html="http://www.w3.org/1999/xhtml" controllerName="useraudit.ext.main.Main">
-    <macros:Page id="Page" title="User Activity Monitoring Fiori Application"/>
+<mvc:View xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m" controllerName="useraudit.ext.main.Main"
+    xmlns:core="sap.ui.core"
+    xmlns:f="sap.f"
+    xmlns:layout="sap.ui.layout" height="100%">
+
+    <f:DynamicPage id='mainDynamicPageId'>
+
+        <!-- TITLE | SUBTITLE -->
+        <f:title>
+            <f:DynamicPageTitle id='mainDynamicPageTitleId'>
+                <f:heading>
+                    <Title id='titleId' text="{i18n>title}" />
+                </f:heading>
+
+                <f:expandedContent>
+                    <Label id='subTitleId' text="{i18n>subTitle}" />
+                </f:expandedContent>
+            </f:DynamicPageTitle>
+        </f:title>
+
+        <!-- HEADER -->
+        <f:header>
+            <f:DynamicPageHeader id='mainDynamicPageHeaderId'>
+
+            </f:DynamicPageHeader>
+        </f:header>
+
+        <!-- MAIN CONTENT -->
+        <f:content>
+            <!-- TABLE -->
+            <Table id="maiTableId" items="{/UserAuthLog}" class="sapUiLargeMarginBottom" >
+                <!-- HEADER TOOLBAR -->
+                <headerToolbar>
+                    <Toolbar id="mainToolbarId">
+                        <Title id="mainTitleTableId" text="{i18n>headerTitleTable}" level="H2"/>
+
+                        <ToolbarSpacer id="mainToolSpace"/>
+
+                        <!-- FILTER + SEARCH -->
+                        <Input id="userSearchId" width="300px" placeholder="Search User" showValueHelp="true" valueHelpRequest="onUserSearchHelp" class="sapUiSmallMarginEnd"/>
+
+                        <Select id="mainHeaderSelectId" width="200px">
+                            <core:Item id="1" key="" text="All" />
+                            <core:Item id="2" key="SUCCESS" text="Success" />
+                            <core:Item id="3" key="FAILED" text="Failed" />
+                        </Select>
+
+                    </Toolbar>
+                </headerToolbar>
+
+                <columns>
+                    <!-- SESSION ID COLUMN -->
+                    <Column id="columnSession">
+                        <Text id="textSession" text="{i18n>sessionId}" />
+                    </Column>
+
+                    <!-- USERNAME COLUMN -->
+                    <Column id="columnName">
+                        <Text id="textName" text="{i18n>username}" />
+                    </Column>
+
+                    <!-- LOGIN RESULT COLUMN -->
+                    <Column id="columnLoginResult">
+                        <Text id="textLoginResult" text="{i18n>loginResult}" />
+                    </Column>
+
+                    <!-- LOGIN DATE COLUMN -->
+                    <Column id="columnLoginDate">
+                        <Text id="textLoginDate" text="{i18n>loginDate}" />
+                    </Column>
+
+                    <!-- LOGIN TIME COLUMN -->
+                    <Column id="columnLoginTime">
+                        <Text id="textLoginTime" text="{i18n>loginTime}" />
+                    </Column>
+
+                    <!-- LOGIN MESSAGE COLUMN -->
+                    <Column id="columnLoginMessage">
+                        <Text id="textLoginMessage" text="{i18n>loginMessage}" />
+                    </Column>
+
+                    <!-- LOGOUT DATE COLUMN -->
+                    <Column id="columnLogoutDate">
+                        <Text id="textLogoutDate" text="{i18n>logoutDate}" />
+                    </Column>
+
+                    <!-- LOGOUT TIME COLUMN -->
+                    <Column id="columnLogoutTime">
+                        <Text id="textLogoutTime" text="{i18n>logoutTime}" />
+                    </Column>
+                </columns>
+
+                <items>
+                    <ColumnListItem id="item">
+                        <cells>
+                            <Text id="item1" text="{SessionId}" />
+                            <Text id="item2" text="{Username}" />
+                            <Text id="item3" text="{LoginResult}" />
+                            <Text id="item4" text="{LoginDate}" />
+                            <Text id="item5" text="{LoginTime}" />
+                            <Text id="item6" text="{LoginMessage}" />
+                            <Text id="item7" text="{LogoutDate}" />
+                            <Text id="item8" text="{LogoutTime}" />
+                        </cells>
+                    </ColumnListItem>
+                </items>
+            </Table>
+        </f:content>
+    </f:DynamicPage>
 </mvc:View>

@@ -13,7 +13,7 @@ export default class Component extends BaseComponent {
    * @public
    * @override
    */
-  //public init() : void {
-  //    super.init();
-  //}
+  public init(): void {
+    super.init();
+  }
 }

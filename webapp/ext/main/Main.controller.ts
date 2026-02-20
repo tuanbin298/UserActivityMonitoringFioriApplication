@@ -1,37 +1,58 @@
 import Controller from "sap/fe/core/PageController";
+import ODataListBinding from "sap/ui/model/odata/v4/ODataListBinding";
+import ODataModel from "sap/ui/model/odata/v4/ODataModel";
 
-/**
- * @namespace useraudit.ext.main
- */
 export default class Main extends Controller {
   /**
-   * Called when a controller is instantiated and its View controls (if available) are already created.
-   * Can be used to modify the View before it is displayed, to bind event handlers and do other one-time initialization.
-   * @memberOf useraudit.ext.main.Main
-   */
-  // public onInit(): void {
-  //     super.onInit(); // needs to be called to properly initialize the page controller
-  //}
+   * Called when the controller is initialized.
+   **/
+  public onInit(): void {
+    super.onInit();
+  }
+
   /**
-   * Similar to onAfterRendering, but this hook is invoked before the controller's View is re-rendered
-   * (NOT before the first rendering! onInit() is used for that one!).
-   * @memberOf useraudit.ext.main.Main
-   */
+   * Called when the value help of the user search input is triggered.
+   * Fetches data from the OData service
+   * Force type
+   **/
+  public async onUserSearchHelp(): Promise<void> {
+    const oModel = this.getAppComponent().getModel() as ODataModel;
+
+    if (!oModel) {
+      throw new Error("OData Model not found");
+    }
+
+    try {
+      debugger;
+
+      const oBinding = oModel.bindList("/UserSearchHelp") as ODataListBinding;
+
+      // requestContexts là async → phải await
+      const aContexts = await oBinding.requestContexts(0, 1000);
+
+      const aData = aContexts.map((oContext) => oContext.getObject());
+
+      console.log("CDS Data:", aData);
+    } catch (error) {
+      console.error("Error fetching CDS data:", error);
+    }
+  }
+
+  /**
+   * Called before the view is re-rendered.
+   **/
   // public  onBeforeRendering(): void {
   //
   //  }
   /**
-   * Called when the View has been rendered (so its HTML is part of the document). Post-rendering manipulations of the HTML could be done here.
-   * This hook is the same one that SAPUI5 controls get after being rendered.
-   * @memberOf useraudit.ext.main.Main
-   */
+   * Called after the view has been rendered.
+   **/
   // public  onAfterRendering(): void {
   //
   //  }
   /**
-   * Called when the Controller is destroyed. Use this one to free resources and finalize activities.
-   * @memberOf useraudit.ext.main.Main
-   */
+   * Called when the controller is destroyed.
+   **/
   // public onExit(): void {
   //
   //  }
