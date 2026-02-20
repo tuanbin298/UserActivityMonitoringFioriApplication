@@ -3,9 +3,7 @@
     xmlns:core="sap.ui.core"
     xmlns:f="sap.f"
     xmlns:layout="sap.ui.layout" height="100%">
-
     <f:DynamicPage id='mainDynamicPageId'>
-
         <!-- TITLE | SUBTITLE -->
         <f:title>
             <f:DynamicPageTitle id='mainDynamicPageTitleId'>
@@ -21,31 +19,31 @@
 
         <!-- HEADER -->
         <f:header>
-            <f:DynamicPageHeader id='mainDynamicPageHeaderId'>
-
-            </f:DynamicPageHeader>
+            <f:DynamicPageHeader id='mainDynamicPageHeaderId' />
         </f:header>
 
         <!-- MAIN CONTENT -->
         <f:content>
             <!-- TABLE -->
-            <Table id="maiTableId" items="{/UserAuthLog}" class="sapUiLargeMarginBottom" >
+            <Table id="maiTableId" items="{
+                    path: '/UserAuthLog',
+                    sorter: { path: 'LoginDate', descending: true }
+                   }" class="sapUiLargeMarginBottom">
                 <!-- HEADER TOOLBAR -->
                 <headerToolbar>
                     <Toolbar id="mainToolbarId">
-                        <Title id="mainTitleTableId" text="{i18n>headerTitleTable}" level="H2"/>
+                        <Title id="mainTitleTableId" text="{= ${i18n>headerTitleTable} + ' (' + ${view>/count} + ')' }" level="H2" />
 
-                        <ToolbarSpacer id="mainToolSpace"/>
+                        <ToolbarSpacer id="mainToolSpace" />
 
                         <!-- FILTER + SEARCH -->
-                        <Input id="userSearchId" width="300px" placeholder="Search User" showValueHelp="true" valueHelpRequest="onUserSearchHelp" class="sapUiSmallMarginEnd"/>
+                        <Input id="userSearchId" width="300px" placeholder="Search User" showValueHelp="true" liveChange="onSearchUserName" valueHelpRequest="onUserSearchHelp" showClearIcon="true" class="sapUiSmallMarginEnd" />
 
-                        <Select id="mainHeaderSelectId" width="200px">
-                            <core:Item id="1" key="" text="All" />
-                            <core:Item id="2" key="SUCCESS" text="Success" />
-                            <core:Item id="3" key="FAILED" text="Failed" />
+                        <Select id="mainHeaderSelectId" width="200px" change="onFilterStatus">
+                            <core:Item id="itemId1" key="" text="All" />
+                            <core:Item id="itemId2" key="SUCCESS" text="Success" />
+                            <core:Item id="itemId3" key="FAIL" text="Failed" />
                         </Select>
-
                     </Toolbar>
                 </headerToolbar>
 
