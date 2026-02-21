@@ -62,7 +62,6 @@
         "sap.m": {},
         "sap.ui.core": {},
         "sap.fe.core": {},
-        "sap.viz": {},
         "sap.fe.macros": {}
       }
     },
