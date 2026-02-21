@@ -10,8 +10,11 @@ import List from "sap/m/List";
 import StandardListItem from "sap/m/StandardListItem";
 import Dialog from "sap/m/Dialog";
 import Button from "sap/m/Button";
+import Formatter from "useraudit/formatter/Formatter";
 
 export default class Main extends Controller {
+  public formatter = Formatter;
+
   /**
    * Called when the controller is initialized.
    **/
@@ -101,10 +104,6 @@ export default class Main extends Controller {
   public async onUserSearchHelp(): Promise<void> {
     // Get OData V4 model from the App Component
     const oModel = this.getAppComponent().getModel() as ODataModel;
-
-    if (!oModel) {
-      return;
-    }
 
     // Create a list binding to /UserSearchHelp
     const oBinding = oModel.bindList("/UserSearchHelp") as ODataListBinding;

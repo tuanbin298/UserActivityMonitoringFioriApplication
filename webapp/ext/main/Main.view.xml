@@ -90,14 +90,32 @@
                 </columns>
 
                 <items>
-                    <ColumnListItem id="item">
+                    <ColumnListItem id="item" type="Navigation">
                         <cells>
-                            <Text id="item1" text="{SessionId}" />
+                            <Text id="item1" text="{SessionId}"/>
                             <Text id="item2" text="{Username}" />
-                            <Text id="item3" text="{LoginResult}" />
+                            <ObjectStatus id="item3" text="{LoginResult}"
+                                icon="{
+                                    path: 'LoginResult',
+                                    formatter: '.formatter.formatLoginResultIcon'
+                                }"
+                                state="{
+                                    path: 'LoginResult',
+                                    formatter: '.formatter.formatLoginResultState'
+                                }"
+                            />
                             <Text id="item4" text="{LoginDate}" />
                             <Text id="item5" text="{LoginTime}" />
-                            <Text id="item6" text="{LoginMessage}" />
+                            <ObjectStatus id="item6" text="{LoginMessage}"
+                                icon="{
+                                    path: 'EventId',
+                                    formatter: '.formatter.formatLoginMessageIcon'
+                                }"
+                                 state="{
+                                    path: 'EventId',
+                                    formatter: '.formatter.formatLoginMessageState'
+                                }"
+                            />
                             <Text id="item7" text="{LogoutDate}" />
                             <Text id="item8" text="{LogoutTime}" />
                         </cells>
