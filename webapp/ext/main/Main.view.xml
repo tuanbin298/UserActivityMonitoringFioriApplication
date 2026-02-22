@@ -2,7 +2,10 @@
     xmlns="sap.m" controllerName="useraudit.ext.main.Main"
     xmlns:core="sap.ui.core"
     xmlns:f="sap.f"
-    xmlns:layout="sap.ui.layout" height="100%">
+    xmlns:layout="sap.ui.layout" height="100%"
+    xmlns:viz="sap.viz.ui5.controls"
+    xmlns:viz.feeds="sap.viz.ui5.controls.common.feeds"
+    xmlns:viz.data="sap.viz.ui5.data">
     <f:DynamicPage id='mainDynamicPageId'>
         <!-- TITLE | SUBTITLE -->
         <f:title>
@@ -19,7 +22,37 @@
 
         <!-- HEADER -->
         <f:header>
-            <f:DynamicPageHeader id='mainDynamicPageHeaderId' />
+            <f:DynamicPageHeader id='mainDynamicPageHeaderId'>
+                <!-- DONUT CHART -->
+                <viz:VizFrame vizProperties="{
+                                title: { visible: true,  text: 'Login Result Overview' },
+                                plotArea: {
+                                    colorPalette: ['#ff4d4f', '#52c41a'],
+                                    dataLabel: {  visible: true,  type: 'value' }
+                                }
+                              }" id="loginChart" vizType="donut" width="25%" height="200px">
+                    <!-- Define data of chart -->
+                    <viz:dataset>
+                        <viz.data:FlattenedDataset id="donutDataset" data="{authLogChart>/}">
+                            <!-- Category  -->
+                            <viz.data:dimensions>
+                                <viz.data:DimensionDefinition id="donutDimensionStatus" name="Status" value="{LoginResult}" />
+                            </viz.data:dimensions>
+
+                            <!-- Value -->
+                            <viz.data:measures>
+                                <viz.data:MeasureDefinition id="donutMeasureCount" name="Count" value="{CountLoginLog}" />
+                            </viz.data:measures>
+                        </viz.data:FlattenedDataset>
+                    </viz:dataset>
+
+                    <!-- Mapping dimension/measure into chart -->
+                    <viz:feeds>
+                        <viz.feeds:FeedItem id="donutFeedColor" uid="color" type="Dimension" values="Status" />
+                        <viz.feeds:FeedItem id="donutFeedSize" uid="size" type="Measure" values="Count" />
+                    </viz:feeds>
+                </viz:VizFrame>
+            </f:DynamicPageHeader>
         </f:header>
 
         <!-- MAIN CONTENT -->
@@ -94,28 +127,22 @@
                         <cells>
                             <Text id="item1" text="{SessionId}"/>
                             <Text id="item2" text="{Username}" />
-                            <ObjectStatus id="item3" text="{LoginResult}"
-                                icon="{
+                            <ObjectStatus id="item3" text="{LoginResult}" icon="{
                                     path: 'LoginResult',
                                     formatter: '.formatter.formatLoginResultIcon'
-                                }"
-                                state="{
+                                }" state="{
                                     path: 'LoginResult',
                                     formatter: '.formatter.formatLoginResultState'
-                                }"
-                            />
+                                }" />
                             <Text id="item4" text="{LoginDate}" />
                             <Text id="item5" text="{LoginTime}" />
-                            <ObjectStatus id="item6" text="{LoginMessage}"
-                                icon="{
+                            <ObjectStatus id="item6" text="{LoginMessage}" icon="{
                                     path: 'EventId',
                                     formatter: '.formatter.formatLoginMessageIcon'
-                                }"
-                                 state="{
+                                }" state="{
                                     path: 'EventId',
                                     formatter: '.formatter.formatLoginMessageState'
-                                }"
-                            />
+                                }" />
                             <Text id="item7" text="{LogoutDate}" />
                             <Text id="item8" text="{LogoutTime}" />
                         </cells>

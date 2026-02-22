@@ -22,6 +22,8 @@ export default class Main extends Controller {
     super.onInit();
 
     this.onInitCount();
+
+    this.onInitLogCount();
   }
 
   /**
@@ -47,12 +49,33 @@ export default class Main extends Controller {
     ) as ODataListBinding;
 
     // Executes the OData call
-    await oBinding.requestContexts(0, 1);
+    await oBinding.requestContexts();
 
     const iCount = oBinding.getLength();
 
     // Create property of view model
     oViewModel.setProperty("/count", iCount);
+  }
+
+  /**
+   * Fetches the data of UserAuthLogChart entity
+   **/
+  public async onInitLogCount(): Promise<void> {
+    // Get OData V4 model from the App Component
+    const oModel = this.getAppComponent().getModel() as ODataModel;
+
+    // Create a list binding to /UserAuthLogChart
+    const oBinding = oModel.bindList("/UserAuthLogChart") as ODataListBinding;
+
+    // Executes the OData call
+    const aContexts = await oBinding.requestContexts();
+
+    const aData = aContexts.map((oContenxt) => oContenxt.getObject());
+
+    const oJsonModel = new JSONModel(aData);
+
+    // Set data into Model authLogChart
+    this.getView()?.setModel(oJsonModel, "authLogChart");
   }
 
   /**
@@ -109,7 +132,7 @@ export default class Main extends Controller {
     const oBinding = oModel.bindList("/UserSearchHelp") as ODataListBinding;
 
     // Executes the OData call and load data
-    const aContexts = await oBinding.requestContexts(0, 1000);
+    const aContexts = await oBinding.requestContexts();
     const aData = aContexts.map((oContext) => oContext.getObject());
 
     const oJsonModel = new JSONModel(aData);
@@ -147,6 +170,7 @@ export default class Main extends Controller {
       },
     });
 
+    // Set data for List
     oList.setModel(oJsonModel);
 
     // Create Dialog
