@@ -61,7 +61,10 @@
             <Table id="maiTableId" items="{
                     path: '/UserAuthLog',
                     sorter: { path: 'LoginDate', descending: true }
-                   }" class="sapUiLargeMarginBottom">
+                   }" class="sapUiLargeMarginBottom"
+                    growing="true"
+                    growingThreshold="100"
+                    growingScrollToLoad="false">
                 <!-- HEADER TOOLBAR -->
                 <headerToolbar>
                     <Toolbar id="mainToolbarId">
