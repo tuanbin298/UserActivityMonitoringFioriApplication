@@ -13,7 +13,6 @@ export default class authDetail extends Controller {
     super.onInit();
     const oRouter = (this as any).getAppComponent().getRouter();
     if (oRouter) {
-      // Lắng nghe sự kiện điều hướng đến trang Detail
       oRouter
         .getRoute("authDetail")
         .attachPatternMatched(this._onObjectMatched, this);
@@ -25,18 +24,11 @@ export default class authDetail extends Controller {
     const oView = this.getView();
     if (!oView || !sKey) return;
 
-    // Bật trạng thái loading cho đến khi lấy xong data
     oView.setBusy(true);
 
     try {
-      // Bước 1: Trích xuất SessionId sạch từ tham số key
-      // Ví dụ: UserAuthLog('DEV-011...') -> DEV-011...
       const sSessionId = sKey.match(/'([^']+)'/)?.[1] || sKey;
-
-      // Bước 2: Lấy OData Model từ App Component (Giống hệt trang Main)
       const oModel = (this as any).getAppComponent().getModel() as ODataModel;
-
-      // Bước 3: Tạo List Binding với Filter theo SessionId
       const oDetailBinding = oModel.bindList(
         "/UserAuthLog",
         undefined,
@@ -44,12 +36,10 @@ export default class authDetail extends Controller {
         [new Filter("SessionId", FilterOperator.EQ, sSessionId)],
       ) as ODataListBinding;
 
-      // Bước 4: Gọi yêu cầu lấy dữ liệu từ Server (Manual Fetch)
       const aContexts = await oDetailBinding.requestContexts(0, 1);
 
       if (aContexts.length > 0) {
         const oData = aContexts[0].getObject();
-        // Bước 5: Đưa dữ liệu vào JSONModel để hiển thị lên View
         const oDetailModel = new JSONModel(oData);
         oView.setModel(oDetailModel, "detailData");
       } else {
@@ -58,7 +48,6 @@ export default class authDetail extends Controller {
     } catch (oError) {
       console.error("Error fetching detail data:", oError);
     } finally {
-      // Tắt trạng thái loading
       oView.setBusy(false);
     }
   }
