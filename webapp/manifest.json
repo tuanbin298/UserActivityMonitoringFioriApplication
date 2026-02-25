@@ -93,12 +93,23 @@
       "css": []
     },
     "routing": {
-      "config": {},
+      "config": {
+        "routerClass": "sap.m.routing.Router",
+        "viewType": "XML",
+        "controlAggregation": "pages",
+        "controlId": "appContent",
+        "async": true
+      },
       "routes": [
         {
           "name": "UserAuthLogMain",
           "pattern": ":?query:",
           "target": "UserAuthLogMain"
+        },
+        {
+          "name": "authDetail",
+          "pattern": "UserAuthLog({key}):?query:",
+          "target": "authDetail"
         }
       ],
       "targets": {
@@ -108,9 +119,19 @@
           "name": "sap.fe.core.fpm",
           "options": {
             "settings": {
-              "navigation": {},
               "contextPath": "/UserAuthLog",
               "viewName": "useraudit.ext.main.Main"
+            }
+          }
+        },
+        "authDetail": {
+          "type": "Component",
+          "id": "authDetail",
+          "name": "sap.fe.core.fpm",
+          "options": {
+            "settings": {
+              "contextPath": "/UserAuthLog",
+              "viewName": "useraudit.ext.authDetail.authDetail"
             }
           }
         }

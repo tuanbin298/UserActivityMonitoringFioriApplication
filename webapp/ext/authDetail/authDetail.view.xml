@@ -1,0 +1,72 @@
+<mvc:View xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    controllerName="useraudit.ext.authDetail.authDetail"
+    xmlns:f="sap.uxap"
+    xmlns:layout="sap.ui.layout"
+    height="100%">
+
+    <f:ObjectPageLayout id="ObjectPageLayout" 
+        showTitleInHeaderContent="false" 
+        upperCaseAnchorBar="false">
+        
+        <f:headerTitle>
+            <f:ObjectPageHeader 
+                objectTitle="{detailData>/SessionId}" 
+                objectSubtitle=""
+                isActionHeaderRequired="false" />
+        </f:headerTitle>
+
+        <f:sections>
+            <f:ObjectPageSection title="USER AUTHENTICATION LOG">
+                <f:subSections>
+                    <f:ObjectPageSubSection>
+                        <layout:Grid defaultSpan="L3 M6 S12">
+                            <VBox>
+                                <Label text="User Session:" design="Bold" />
+                                <Text text="{detailData>/SessionId}" />
+                                <Label text="User Name:" design="Bold" class="sapUiSmallMarginTop" />
+                                <Text text="{detailData>/Username}" />
+                            </VBox>
+                            
+                            <VBox>
+                                <Label text="Login Result:" design="Bold" />
+                                <ObjectStatus text="{detailData>/LoginResult}" 
+                                    state="{path: 'detailData>/LoginResult', formatter: '.formatter.formatLoginResultState'}" />
+                                <Label text="User Login Message:" design="Bold" class="sapUiSmallMarginTop" />
+                                <ObjectStatus text="{detailData>/LoginMessage}" 
+                                    state="{path: 'detailData>/LoginResult', formatter: '.formatter.formatLoginMessageState'}" />
+                            </VBox>
+
+                            <VBox>
+                                <Label text="Terminal ID:" design="Bold" />
+                                <Text text="-" /> 
+                                <Label text="Event ID:" design="Bold" class="sapUiSmallMarginTop" />
+                                <ObjectStatus text="{detailData>/EventId}" state="Error" />
+                            </VBox>
+
+                            <VBox>
+                                <Label text="Created At:" design="Bold" />
+                                <Text text="{detailData>/LoginTime}" />
+                                <Label text="Created On:" design="Bold" class="sapUiSmallMarginTop" />
+                                <Text text="{detailData>/LoginDate}" />
+                            </VBox>
+                        </layout:Grid>
+                    </f:ObjectPageSubSection>
+                </f:subSections>
+            </f:ObjectPageSection>
+
+            <f:ObjectPageSection title="LOGIN - LOGOUT INFORMATION">
+                <f:subSections>
+                    <f:ObjectPageSubSection>
+                        <layout:Grid defaultSpan="L3 M6 S12">
+                            <VBox><Label text="Login Date:" design="Bold" /><Text text="{detailData>/LoginDate}" /></VBox>
+                            <VBox><Label text="Login Time:" design="Bold" /><Text text="{detailData>/LoginTime}" /></VBox>
+                            <VBox><Label text="Logout Time:" design="Bold" /><Text text="{detailData>/LogoutTime}" /></VBox>
+                            <VBox><Label text="Logout Date:" design="Bold" /><Text text="{detailData>/LogoutDate}" /></VBox>
+                        </layout:Grid>
+                    </f:ObjectPageSubSection>
+                </f:subSections>
+            </f:ObjectPageSection>
+        </f:sections>
+    </f:ObjectPageLayout>
+</mvc:View>

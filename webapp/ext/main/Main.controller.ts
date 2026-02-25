@@ -11,6 +11,7 @@ import StandardListItem from "sap/m/StandardListItem";
 import Dialog from "sap/m/Dialog";
 import Button from "sap/m/Button";
 import Formatter from "useraudit/formatter/Formatter";
+import Component from "sap/ui/core/Component";
 
 export default class Main extends Controller {
   public formatter = Formatter;
@@ -206,4 +207,25 @@ export default class Main extends Controller {
   // public onExit(): void {
   //
   //  }
+  public onPressNavigate(oEvent: any): void {
+    const oItem = oEvent.getSource();
+    const oContext = oItem.getBindingContext();
+
+    if (oContext) {
+      // Lấy đường dẫn chuẩn: /UserAuthLog('...')
+      let sPath = oContext.getPath();
+
+      // Cắt bỏ dấu "/" ở đầu để Router nhận tham số key sạch
+      if (sPath.startsWith("/")) {
+        sPath = sPath.substring(1);
+      }
+
+      const oRouter = (this as any).getAppComponent().getRouter();
+      if (oRouter) {
+        oRouter.navTo("authDetail", {
+          key: sPath, // Gửi "UserAuthLog('...')"
+        });
+      }
+    }
+  }
 }

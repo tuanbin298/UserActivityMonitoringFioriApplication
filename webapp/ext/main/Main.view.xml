@@ -126,7 +126,7 @@
                 </columns>
 
                 <items>
-                    <ColumnListItem id="item" type="Navigation">
+                    <ColumnListItem id="item" type="Navigation" press="onPressNavigate">
                         <cells>
                             <Text id="item1" text="{SessionId}"/>
                             <Text id="item2" text="{Username}" />
