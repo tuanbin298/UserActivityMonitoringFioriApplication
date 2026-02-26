@@ -107,9 +107,9 @@
           "target": "UserAuthLogMain"
         },
         {
-          "name": "authDetail",
+          "name": "AuthDetail",
           "pattern": "UserAuthLog({key}):?query:",
-          "target": "authDetail"
+          "target": "AuthDetail"
         }
       ],
       "targets": {
@@ -124,14 +124,14 @@
             }
           }
         },
-        "authDetail": {
+        "AuthDetail": {
           "type": "Component",
-          "id": "authDetail",
+          "id": "AuthDetail",
           "name": "sap.fe.core.fpm",
           "options": {
             "settings": {
               "contextPath": "/UserAuthLog",
-              "viewName": "useraudit.ext.authDetail.authDetail"
+              "viewName": "useraudit.ext.AuthDetail.AuthDetail"
             }
           }
         }

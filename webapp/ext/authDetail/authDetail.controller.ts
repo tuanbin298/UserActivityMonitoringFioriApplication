@@ -5,38 +5,46 @@ import ODataModel from "sap/ui/model/odata/v4/ODataModel";
 import Filter from "sap/ui/model/Filter";
 import FilterOperator from "sap/ui/model/FilterOperator";
 import Formatter from "useraudit/formatter/Formatter";
+import MessageBox from "sap/m/MessageBox";
 
-export default class authDetail extends Controller {
+export default class AuthDetail extends Controller {
   public formatter = Formatter;
 
+  /**
+   * Called when the controller is initialized.
+   **/
   public onInit(): void {
     super.onInit();
+
     const oRouter = (this as any).getAppComponent().getRouter();
     if (oRouter) {
-      // Lắng nghe sự kiện điều hướng đến trang Detail
       oRouter
-        .getRoute("authDetail")
+        .getRoute("AuthDetail")
         .attachPatternMatched(this._onObjectMatched, this);
     }
   }
 
+  /**
+   * Handles route matching for AuthDetail page
+   * and loads detail data based on the navigation key.
+   **/
   private async _onObjectMatched(oEvent: any): Promise<void> {
+    // Get parameter from URL
     const sKey = oEvent.getParameter("arguments").key;
+
     const oView = this.getView();
     if (!oView || !sKey) return;
 
-    // Bật trạng thái loading cho đến khi lấy xong data
+    // Loading state
     oView.setBusy(true);
 
     try {
-      // Bước 1: Trích xuất SessionId sạch từ tham số key
-      // Ví dụ: UserAuthLog('DEV-011...') -> DEV-011...
       const sSessionId = sKey.match(/'([^']+)'/)?.[1] || sKey;
 
-      // Bước 2: Lấy OData Model từ App Component (Giống hệt trang Main)
-      const oModel = (this as any).getAppComponent().getModel() as ODataModel;
+      // Get OData V4 model from the App Component
+      const oModel = this.getAppComponent().getModel() as ODataModel;
 
-      // Bước 3: Tạo List Binding với Filter theo SessionId
+      // Create a list binding to /UserAuthLog
       const oDetailBinding = oModel.bindList(
         "/UserAuthLog",
         undefined,
@@ -44,21 +52,17 @@ export default class authDetail extends Controller {
         [new Filter("SessionId", FilterOperator.EQ, sSessionId)],
       ) as ODataListBinding;
 
-      // Bước 4: Gọi yêu cầu lấy dữ liệu từ Server (Manual Fetch)
-      const aContexts = await oDetailBinding.requestContexts(0, 1);
+      // Executes the OData call and load data
+      const aContexts = await oDetailBinding.requestContexts();
 
-      if (aContexts.length > 0) {
-        const oData = aContexts[0].getObject();
-        // Bước 5: Đưa dữ liệu vào JSONModel để hiển thị lên View
-        const oDetailModel = new JSONModel(oData);
-        oView.setModel(oDetailModel, "detailData");
-      } else {
-        console.error("No data found for SessionId:", sSessionId);
-      }
+      const aData = aContexts.map((oContenxt) => oContenxt.getObject());
+
+      const oDetailModel = new JSONModel(aData[0]);
+
+      oView.setModel(oDetailModel, "detailData");
     } catch (oError) {
-      console.error("Error fetching detail data:", oError);
+      MessageBox.error("Failed to load detail data. Please try again.");
     } finally {
-      // Tắt trạng thái loading
       oView.setBusy(false);
     }
   }

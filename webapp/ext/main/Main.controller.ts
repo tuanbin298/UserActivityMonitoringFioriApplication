@@ -11,7 +11,7 @@ import StandardListItem from "sap/m/StandardListItem";
 import Dialog from "sap/m/Dialog";
 import Button from "sap/m/Button";
 import Formatter from "useraudit/formatter/Formatter";
-import Component from "sap/ui/core/Component";
+import MessageBox from "sap/m/MessageBox";
 
 export default class Main extends Controller {
   public formatter = Formatter;
@@ -31,52 +31,60 @@ export default class Main extends Controller {
    * Fetches the total number of records from the UserAuthLog entity
    **/
   public async onInitCount(): Promise<void> {
-    // Create view model
-    const oViewModel = new JSONModel({
-      count: 0,
-    });
-    this.getView()?.setModel(oViewModel, "view");
+    try {
+      // Create view model
+      const oViewModel = new JSONModel({
+        count: 0,
+      });
+      this.getView()?.setModel(oViewModel, "view");
 
-    // Get OData V4 model from the App Component
-    const oModel = this.getAppComponent().getModel() as ODataModel;
+      // Get OData V4 model from the App Component
+      const oModel = this.getAppComponent().getModel() as ODataModel;
 
-    // Create a list binding to /UserAuthLog with $count enabled
-    const oBinding = oModel.bindList(
-      "/UserAuthLog",
-      undefined,
-      undefined,
-      undefined,
-      { $count: true },
-    ) as ODataListBinding;
+      // Create a list binding to /UserAuthLog with $count enabled
+      const oBinding = oModel.bindList(
+        "/UserAuthLog",
+        undefined,
+        undefined,
+        undefined,
+        { $count: true },
+      ) as ODataListBinding;
 
-    // Executes the OData call
-    await oBinding.requestContexts();
+      // Executes the OData call
+      await oBinding.requestContexts();
 
-    const iCount = oBinding.getLength();
+      const iCount = oBinding.getLength();
 
-    // Create property of view model
-    oViewModel.setProperty("/count", iCount);
+      // Create property of view model
+      oViewModel.setProperty("/count", iCount);
+    } catch (error) {
+      MessageBox.error("Failed to load chart data.");
+    }
   }
 
   /**
    * Fetches the data of UserAuthLogChart entity
    **/
   public async onInitLogCount(): Promise<void> {
-    // Get OData V4 model from the App Component
-    const oModel = this.getAppComponent().getModel() as ODataModel;
+    try {
+      // Get OData V4 model from the App Component
+      const oModel = this.getAppComponent().getModel() as ODataModel;
 
-    // Create a list binding to /UserAuthLogChart
-    const oBinding = oModel.bindList("/UserAuthLogChart") as ODataListBinding;
+      // Create a list binding to /UserAuthLogChart
+      const oBinding = oModel.bindList("/UserAuthLogChart") as ODataListBinding;
 
-    // Executes the OData call
-    const aContexts = await oBinding.requestContexts();
+      // Executes the OData call
+      const aContexts = await oBinding.requestContexts();
 
-    const aData = aContexts.map((oContenxt) => oContenxt.getObject());
+      const aData = aContexts.map((oContenxt) => oContenxt.getObject());
 
-    const oJsonModel = new JSONModel(aData);
+      const oJsonModel = new JSONModel(aData);
 
-    // Set data into Model authLogChart
-    this.getView()?.setModel(oJsonModel, "authLogChart");
+      // Set data into Model authLogChart
+      this.getView()?.setModel(oJsonModel, "authLogChart");
+    } catch (error) {
+      MessageBox.error("Failed to load chart data.");
+    }
   }
 
   /**
@@ -126,67 +134,97 @@ export default class Main extends Controller {
    * Fetches data from the OData service
    **/
   public async onUserSearchHelp(): Promise<void> {
-    // Get OData V4 model from the App Component
-    const oModel = this.getAppComponent().getModel() as ODataModel;
+    try {
+      // Get OData V4 model from the App Component
+      const oModel = this.getAppComponent().getModel() as ODataModel;
 
-    // Create a list binding to /UserSearchHelp
-    const oBinding = oModel.bindList("/UserSearchHelp") as ODataListBinding;
+      // Create a list binding to /UserSearchHelp
+      const oBinding = oModel.bindList("/UserSearchHelp") as ODataListBinding;
 
-    // Executes the OData call and load data
-    const aContexts = await oBinding.requestContexts();
-    const aData = aContexts.map((oContext) => oContext.getObject());
+      // Executes the OData call and load data
+      const aContexts = await oBinding.requestContexts();
+      const aData = aContexts.map((oContext) => oContext.getObject());
 
-    const oJsonModel = new JSONModel(aData);
+      const oJsonModel = new JSONModel(aData);
 
-    // Create List
-    const oList = new List({
-      mode: "SingleSelectMaster",
-      items: {
-        path: "/",
-        template: new StandardListItem({
-          title: "{Username}",
+      // Create List
+      const oList = new List({
+        mode: "SingleSelectMaster",
+        items: {
+          path: "/",
+          template: new StandardListItem({
+            title: "{Username}",
+          }),
+        },
+        selectionChange: (oEvent) => {
+          //Get line that user click
+          const oItem = oEvent.getParameter("listItem");
+          if (!oItem) {
+            return;
+          }
+
+          // Connects the UI item to its underlying model data
+          const oContext = oItem.getBindingContext();
+
+          // Get the actual data object from the model
+          const oSelected = oContext?.getObject();
+
+          if (oSelected) {
+            (this.byId("userSearchId") as Input).setValue(oSelected.Username);
+          }
+
+          // Filter
+          this.applyFilters();
+
+          oDialog.close();
+        },
+      });
+
+      // Set data for List
+      oList.setModel(oJsonModel);
+
+      // Create Dialog
+      const oDialog = new Dialog({
+        title: "Select User",
+        contentWidth: "400px",
+        contentHeight: "500px",
+        content: [oList],
+        endButton: new Button({
+          text: "Close",
+          press: () => oDialog.close(),
         }),
-      },
-      selectionChange: (oEvent) => {
-        //Get line that user click
-        const oItem = oEvent.getParameter("listItem");
-        if (!oItem) {
-          return;
-        }
+      });
 
-        // Connects the UI item to its underlying model data
-        const oContext = oItem.getBindingContext();
+      oDialog.open();
+    } catch (error) {
+      MessageBox.error("Failed to load user search help.");
+    }
+  }
 
-        // Get the actual data object from the model
-        const oSelected = oContext?.getObject();
+  /**
+   * Navigate to AuthDetail page
+   **/
+  public onPressNavigate(oEvent: any): void {
+    // Get control and BindingContext of line
+    const oItem = oEvent.getSource();
+    const oContext = oItem.getBindingContext();
 
-        if (oSelected) {
-          (this.byId("userSearchId") as Input).setValue(oSelected.Username);
-        }
+    if (oContext) {
+      // Get path
+      let sPath = oContext.getPath();
 
-        // Filter
-        this.applyFilters();
+      if (sPath.startsWith("/")) {
+        sPath = sPath.substring(1);
+      }
 
-        oDialog.close();
-      },
-    });
-
-    // Set data for List
-    oList.setModel(oJsonModel);
-
-    // Create Dialog
-    const oDialog = new Dialog({
-      title: "Select User",
-      contentWidth: "400px",
-      contentHeight: "500px",
-      content: [oList],
-      endButton: new Button({
-        text: "Close",
-        press: () => oDialog.close(),
-      }),
-    });
-
-    oDialog.open();
+      // Navigate with parameter session_id
+      const oRouter = (this as any).getAppComponent().getRouter();
+      if (oRouter) {
+        oRouter.navTo("AuthDetail", {
+          key: sPath,
+        });
+      }
+    }
   }
 
   /**
@@ -207,25 +245,4 @@ export default class Main extends Controller {
   // public onExit(): void {
   //
   //  }
-  public onPressNavigate(oEvent: any): void {
-    const oItem = oEvent.getSource();
-    const oContext = oItem.getBindingContext();
-
-    if (oContext) {
-      // Lấy đường dẫn chuẩn: /UserAuthLog('...')
-      let sPath = oContext.getPath();
-
-      // Cắt bỏ dấu "/" ở đầu để Router nhận tham số key sạch
-      if (sPath.startsWith("/")) {
-        sPath = sPath.substring(1);
-      }
-
-      const oRouter = (this as any).getAppComponent().getRouter();
-      if (oRouter) {
-        oRouter.navTo("authDetail", {
-          key: sPath, // Gửi "UserAuthLog('...')"
-        });
-      }
-    }
-  }
 }

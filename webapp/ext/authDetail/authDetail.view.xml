@@ -1,68 +1,149 @@
 <mvc:View xmlns:mvc="sap.ui.core.mvc"
-    xmlns="sap.m"
-    controllerName="useraudit.ext.authDetail.authDetail"
+    xmlns="sap.m" controllerName="useraudit.ext.AuthDetail.AuthDetail"
     xmlns:f="sap.uxap"
-    xmlns:layout="sap.ui.layout"
-    height="100%">
-
-    <f:ObjectPageLayout id="ObjectPageLayout" 
-        showTitleInHeaderContent="false" 
-        upperCaseAnchorBar="false">
-        
+    xmlns:core="sap.ui.core"
+    xmlns:layout="sap.ui.layout" height="100%">
+    <f:ObjectPageLayout id="ObjectPageLayoutId">
+        <!-- HEADER -->
         <f:headerTitle>
-            <f:ObjectPageHeader 
-                objectTitle="{detailData>/SessionId}" 
-                objectSubtitle=""
-                isActionHeaderRequired="false" />
+            <!-- TITLE | SUBTITLE -->
+            <f:ObjectPageDynamicHeaderTitle id="ObjectPageDynamicHeaderTitleId">
+                <f:heading>
+                    <Title id="TitleId" text="{detailData>/SessionId}" level="H2" />
+                </f:heading>
+                <f:expandedContent>
+                    <Text id="SubTitleId" text="{i18n>subTitle}" />
+                </f:expandedContent>
+            </f:ObjectPageDynamicHeaderTitle>
         </f:headerTitle>
 
+        <f:headerContent>
+            <!-- USER CARD -->
+            <HBox id="HeaderUserBox" class="sapUiSmallMarginBeginEnd sapUiSmallMarginBottom">
+                <!-- AVATAR -->
+                <Avatar id="HeaderAvatar" displaySize="L" class="sapUiSmallMarginEnd"/>
+
+                <VBox id="HeaderUserInfoBox">
+                    <!-- TITLE -->
+                    <Title id="HeaderUserNameTitle" text="{detailData>/Username}" level="H5"/>
+
+                    <!-- LOGIN RESULT -->
+                    <ObjectStatus id="HeaderLoginResultStatus" text="{detailData>/LoginResult}" state="{
+                        path: 'detailData>/LoginResult',
+                        formatter: '.formatter.formatLoginResultState'
+                    }" icon="{
+                        path: 'detailData>/LoginResult',
+                        formatter: '.formatter.formatLoginResultIcon'
+                    }" class="sapUiSmallMarginBottom"/>
+
+                    <Label id="LabelUserClient" text="{i18n>client}" design="Bold"/>
+                    <Text id="TextUserClient" text="{i18n>clientNum}"/>
+                </VBox>
+            </HBox>
+        </f:headerContent>
+
+        <!-- SECTIONS -->
         <f:sections>
-            <f:ObjectPageSection title="USER AUTHENTICATION LOG">
+            <!-- DETAIL SECTIONS -->
+            <f:ObjectPageSection id="ObjectPageSectionId" title="{i18n>detailSectionTitle}">
                 <f:subSections>
-                    <f:ObjectPageSubSection>
-                        <layout:Grid defaultSpan="L3 M6 S12">
-                            <VBox>
-                                <Label text="User Session:" design="Bold" />
-                                <Text text="{detailData>/SessionId}" />
-                                <Label text="User Name:" design="Bold" class="sapUiSmallMarginTop" />
-                                <Text text="{detailData>/Username}" />
-                            </VBox>
-                            
-                            <VBox>
-                                <Label text="Login Result:" design="Bold" />
-                                <ObjectStatus text="{detailData>/LoginResult}" 
-                                    state="{path: 'detailData>/LoginResult', formatter: '.formatter.formatLoginResultState'}" />
-                                <Label text="User Login Message:" design="Bold" class="sapUiSmallMarginTop" />
-                                <ObjectStatus text="{detailData>/LoginMessage}" 
-                                    state="{path: 'detailData>/LoginResult', formatter: '.formatter.formatLoginMessageState'}" />
+                    <f:ObjectPageSubSection id="ObjectPageSubInfoSectionId">
+                        <layout:Grid id="AuthDetailGridId" defaultSpan="L3 M6 S12">
+                            <!-- COLUMN 1 -->
+                            <VBox id="AuthDetailUserInfoBox">
+                                <!-- USER SESSION -->
+                                <Label id="LabelUserSession" text="{i18n>sessionId}" design="Bold" />
+                                <Text id="TextUserSession" text="{detailData>/SessionId}" />
+
+                                <!-- USERNAME -->
+                                <Label id="LabelUserName" text="{i18n>username}" design="Bold" class="sapUiSmallMarginTop" />
+                                <Text id="TextUserName" text="{detailData>/Username}" />
                             </VBox>
 
-                            <VBox>
-                                <Label text="Terminal ID:" design="Bold" />
-                                <Text text="-" /> 
-                                <Label text="Event ID:" design="Bold" class="sapUiSmallMarginTop" />
-                                <ObjectStatus text="{detailData>/EventId}" state="Error" />
+                            <!-- COLUMN 2 -->
+                            <VBox id="AuthDetailLoginResultBox">
+                                <!-- LOGIN RESULT -->
+                                <Label id="LabelLoginResult" text="{i18n>loginResult}" design="Bold" />
+                                <ObjectStatus id="StatusLoginResult" text="{detailData>/LoginResult}" state="{
+                                            path: 'detailData>/LoginResult',
+                                            formatter: '.formatter.formatLoginResultState'
+                                        }" icon="{
+                                            path: 'detailData>/LoginResult',
+                                            formatter: '.formatter.formatLoginResultIcon'
+                                    }" />
+
+                                <!-- LOGIN MESSAGE -->
+                                <Label id="LabelLoginMessage" text="{i18n>loginMessage}" design="Bold" class="sapUiSmallMarginTop" />
+                                <ObjectStatus id="StatusLoginMessage" text="{detailData>/LoginMessage}" state="{
+                                            path: 'detailData>/LoginResult',
+                                            formatter: '.formatter.formatLoginMessageState'
+                                        }" icon="{
+                                            path: 'detailData>/LoginResult',
+                                            formatter: '.formatter.formatLoginResultIcon'
+                                    }" />
                             </VBox>
 
-                            <VBox>
-                                <Label text="Created At:" design="Bold" />
-                                <Text text="{detailData>/LoginTime}" />
-                                <Label text="Created On:" design="Bold" class="sapUiSmallMarginTop" />
-                                <Text text="{detailData>/LoginDate}" />
+                            <!-- COLUMN 3 -->
+                            <VBox id="AuthDetailEventBox">
+                                <!-- TERMINAL ID -->
+                                <Label id="LabelTerminalId" text="{i18n>terminalId}" design="Bold" />
+                                <Text id="TextTerminalId" text="{detailData>/TerminalId}" />
+
+                                <!-- EVENT ID -->
+                                <Label id="LabelEventId" text="{i18n>eventId}" design="Bold" class="sapUiSmallMarginTop" />
+                                <ObjectStatus id="StatusEventId" text="{detailData>/EventId}" state="{
+                                            path: 'detailData>/LoginResult',
+                                            formatter: '.formatter.formatLoginMessageState'
+                                        }" />
+                            </VBox>
+
+                            <!-- COLUMN 4 -->
+                            <VBox id="AuthDetailDateTimeBox">
+                                <!-- CREATED AT -->
+                                <Label id="LabelCreatedAt" text="{i18n>createAt}" design="Bold" />
+                                <Text id="TextCreatedAt" text="{detailData>/LoginTime}" />
+
+                                <!-- CREATED ON -->
+                                <Label id="LabelCreatedOn" text="{i18n>createOn}" design="Bold" class="sapUiSmallMarginTop" />
+                                <Text id="TextCreatedOn" text="{detailData>/LoginDate}" />
                             </VBox>
                         </layout:Grid>
                     </f:ObjectPageSubSection>
                 </f:subSections>
             </f:ObjectPageSection>
 
-            <f:ObjectPageSection title="LOGIN - LOGOUT INFORMATION">
+            <!-- TIME SECTIONS -->
+            <f:ObjectPageSection id="AuthDetailLoginLogoutSectionId" title="{i18n>loginLogoutSectionTitle}">
                 <f:subSections>
-                    <f:ObjectPageSubSection>
-                        <layout:Grid defaultSpan="L3 M6 S12">
-                            <VBox><Label text="Login Date:" design="Bold" /><Text text="{detailData>/LoginDate}" /></VBox>
-                            <VBox><Label text="Login Time:" design="Bold" /><Text text="{detailData>/LoginTime}" /></VBox>
-                            <VBox><Label text="Logout Time:" design="Bold" /><Text text="{detailData>/LogoutTime}" /></VBox>
-                            <VBox><Label text="Logout Date:" design="Bold" /><Text text="{detailData>/LogoutDate}" /></VBox>
+                    <f:ObjectPageSubSection id="ObjectPageSubTimeSectionId">
+                        <layout:Grid id="AuthDetailLoginLogoutGridId" defaultSpan="L3 M6 S12">
+                            <!-- COLUMN 1 -->
+                            <VBox id="LoginDateBox">
+                                <!-- Login Date -->
+                                <Label id="LabelLoginDate" text="{i18n>loginDate}" design="Bold" />
+                                <Text id="TextLoginDate" text="{detailData>/LoginDate}" />
+                            </VBox>
+
+                            <!-- COLUMN 2 -->
+                            <VBox id="LoginTimeBox">
+                                <!-- Login Time -->
+                                <Label id="LabelLoginTime" text="{i18n>loginTime}" design="Bold" />
+                                <Text id="TextLoginTime" text="{detailData>/LoginTime}" />
+                            </VBox>
+
+                            <!-- COLUMN 3 -->
+                            <VBox id="LogoutTimeBox">
+                                <!-- Logout Time -->
+                                <Label id="LabelLogoutTime" text="{i18n>logoutTime}" design="Bold" />
+                                <Text id="TextLogoutTime" text="{detailData>/LogoutTime}" />
+                            </VBox>
+
+                            <!-- COLUMN 4 -->
+                            <VBox id="LogoutDateBox">
+                                <!-- Logout Date -->
+                                <Label id="LabelLogoutDate" text="{i18n>logoutDate}" design="Bold" />
+                                <Text id="TextLogoutDate" text="{detailData>/LogoutDate}" />
+                            </VBox>
                         </layout:Grid>
                     </f:ObjectPageSubSection>
                 </f:subSections>
