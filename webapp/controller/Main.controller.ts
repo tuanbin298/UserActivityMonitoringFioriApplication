@@ -35,29 +35,38 @@ export default class Main extends Controller {
   public onInit(): void {
     super.onInit();
 
-    // Create view model
-    const oOverviewModel = new JSONModel({
-      totalUsers: 0,
-      totalLogs: 0,
-      successLogin: 0,
-      failedLogin: 0,
-      lockedUsers: 0,
-      dumpCount: 0,
-      systemInformation: "",
-    });
-    this.getView()?.setModel(oOverviewModel, "Overview");
+    // Set busy ON
+    this.getView()?.setBusy(true);
 
-    const oGlobalModel = this.getAppComponent().getModel("global");
-    if (oGlobalModel)
-      oGlobalModel.attachPropertyChange(this.onGlobalDateChanged, this);
+    try {
+      // Create view model
+      const oOverviewModel = new JSONModel({
+        totalUsers: 0,
+        totalLogs: 0,
+        successLogin: 0,
+        failedLogin: 0,
+        lockedUsers: 0,
+        dumpCount: 0,
+        systemInformation: "",
+      });
+      this.getView()?.setModel(oOverviewModel, "Overview");
 
-    this._rebindTable();
+      const oGlobalModel = this.getAppComponent().getModel("global");
+      if (oGlobalModel)
+        oGlobalModel.attachPropertyChange(this.onGlobalDateChanged, this);
 
-    this.onInitCount();
-    this.onInitLogCount();
-    this.onInitTcodeCount();
-    this.onInitDumpCount();
-    this.onInitOverviewData();
+      this._rebindTable();
+
+      this.onInitCount();
+      this.onInitLogCount();
+      this.onInitTcodeCount();
+      this.onInitDumpCount();
+      this.onInitOverviewData();
+    } catch (error) {
+      MessageBox.error("Failed to initialize data.");
+    } finally {
+      this.getView()?.setBusy(false);
+    }
   }
 
   /**
@@ -254,10 +263,35 @@ export default class Main extends Controller {
         },
       ) as ODataListBinding;
 
-      // Executes the OData call
-      const aContexts = await oBindingTotalUser.requestContexts();
+      // Executes the OData call and load ALL data (paging)
+      const aAllContexts = [];
+      let iSkip = 0;
+      const iPageSize = 100;
 
-      aContexts.forEach((oContext) => {
+      // Loop to fetch data page by page until all data is loaded
+      while (true) {
+        const aContexts = await oBindingTotalUser.requestContexts(
+          iSkip,
+          iPageSize,
+        );
+
+        // If no data is returned, stop the loop (no more data available)
+        if (aContexts.length === 0) {
+          break;
+        }
+
+        aAllContexts.push(...aContexts);
+
+        // If returned data is less than page size,
+        // it means this is the last page → stop the loop
+        if (aContexts.length < iPageSize) {
+          break;
+        }
+
+        iSkip += iPageSize;
+      }
+
+      aAllContexts.forEach((oContext) => {
         const oObj = oContext.getObject();
         const key = oObj.Username;
 
@@ -378,10 +412,24 @@ export default class Main extends Controller {
         },
       ) as ODataListBinding;
 
-      // Executes the OData call
-      const aContexts = await oBinding.requestContexts(0, 10000);
+      // ===== Fetch ALL data using paging =====
+      const aAllContexts: any[] = [];
+      let iSkip = 0;
+      const iPageSize = 100;
 
-      const aData = aContexts.map((oContext) => oContext.getObject());
+      while (true) {
+        const aContexts = await oBinding.requestContexts(iSkip, iPageSize);
+
+        if (aContexts.length === 0) break;
+
+        aAllContexts.push(...aContexts);
+
+        if (aContexts.length < iPageSize) break;
+
+        iSkip += iPageSize;
+      }
+
+      const aData = aAllContexts.map((oContext) => oContext.getObject());
 
       // Set data for overview
       const objData = aData.reduce((acc, cur) => {
@@ -431,11 +479,25 @@ export default class Main extends Controller {
         },
       ) as ODataListBinding;
 
-      // Executes the OData call
-      const aContexts = await oBinding.requestContexts();
+      // ===== Fetch ALL data using paging =====
+      const aAllContexts: any[] = [];
+      let iSkip = 0;
+      const iPageSize = 100;
+
+      while (true) {
+        const aContexts = await oBinding.requestContexts(iSkip, iPageSize);
+
+        if (aContexts.length === 0) break;
+
+        aAllContexts.push(...aContexts);
+
+        if (aContexts.length < iPageSize) break;
+
+        iSkip += iPageSize;
+      }
 
       // Group by + SUM data
-      aContexts.forEach((oContext) => {
+      aAllContexts.forEach((oContext) => {
         const oObj = oContext.getObject();
 
         const key = oObj.TCode;
@@ -497,10 +559,24 @@ export default class Main extends Controller {
         },
       ) as ODataListBinding;
 
-      // Executes the OData call
-      const aContexts = await oBinding.requestContexts();
+      // ===== Fetch ALL data using paging =====
+      const aAllContexts: any[] = [];
+      let iSkip = 0;
+      const iPageSize = 100;
 
-      aContexts.forEach((oContext) => {
+      while (true) {
+        const aContexts = await oBinding.requestContexts(iSkip, iPageSize);
+
+        if (aContexts.length === 0) break;
+
+        aAllContexts.push(...aContexts);
+
+        if (aContexts.length < iPageSize) break;
+
+        iSkip += iPageSize;
+      }
+
+      aAllContexts.forEach((oContext) => {
         const oObj = oContext.getObject();
         const key = oObj.Username;
 
@@ -696,10 +772,32 @@ export default class Main extends Controller {
         }),
       ) as ODataListBinding;
 
-      // Executes the OData call and load data
-      const aContexts = await oBinding.requestContexts();
+      // Executes the OData call and load ALL data (paging)
+      const aAllContexts = [];
+      let iSkip = 0;
+      const iPageSize = 100;
 
-      aContexts.forEach((oContext) => {
+      // Loop to fetch data page by page until all data is loaded
+      while (true) {
+        const aContexts = await oBinding.requestContexts(iSkip, iPageSize);
+
+        // If no data is returned, stop the loop (no more data available)
+        if (aContexts.length === 0) {
+          break;
+        }
+
+        aAllContexts.push(...aContexts);
+
+        // If returned data is less than page size,
+        // it means this is the last page → stop the loop
+        if (aContexts.length < iPageSize) {
+          break;
+        }
+
+        iSkip += iPageSize;
+      }
+
+      aAllContexts.forEach((oContext) => {
         const oObj = oContext.getObject();
         const key = oObj.Username;
 

@@ -180,8 +180,22 @@ export default class UserDetail extends Controller {
       ],
     ) as ODataListBinding;
 
-    // Executes the OData call
-    const aContextsChart = await oUserAuthChart.requestContexts();
+    // ===== Fetch ALL data using paging =====
+    const aContextsChart: any[] = [];
+    let iSkip = 0;
+    const iPageSize = 100;
+
+    while (true) {
+      const aContexts = await oUserAuthChart.requestContexts(iSkip, iPageSize);
+
+      if (aContexts.length === 0) break;
+
+      aContextsChart.push(...aContexts);
+
+      if (aContexts.length < iPageSize) break;
+
+      iSkip += iPageSize;
+    }
 
     const aDataChart = aContextsChart.map((oContext) => oContext.getObject());
 
@@ -297,24 +311,22 @@ export default class UserDetail extends Controller {
 
     // Executes the OData call
     const aContextsActivityTCodeByUser =
-      await oActivityTCodeByUser.requestContexts();
+      await this.fetchAllData(oActivityTCodeByUser);
 
     // Group by + SUM data
     aContextsActivityTCodeByUser.forEach((oContext) => {
-      const oObj = oContext.getObject();
-
-      const key = oObj.TCode;
+      const key = oContext.TCode;
 
       // If TCode is exist, plus TCodeCount, else create new obj
       if (!oTCodePerUserData[key]) {
         oTCodePerUserData[key] = {
-          TCode: oObj.TCode,
-          TCodeName: oObj.TCodeName,
+          TCode: oContext.TCode,
+          TCodeName: oContext.TCodeName,
           TCodeCount: 0,
         };
       }
 
-      oTCodePerUserData[key].TCodeCount += oObj.TCodeCount;
+      oTCodePerUserData[key].TCodeCount += oContext.TCodeCount;
     });
 
     //  Convert into array
@@ -351,8 +363,7 @@ export default class UserDetail extends Controller {
       ],
     ) as ODataListBinding;
 
-    const aContextsTable = await oUserActTable.requestContexts();
-    const aDataTable = aContextsTable.map((oContext) => oContext.getObject());
+    const aDataTable = await this.fetchAllData(oUserActTable);
 
     const oTableModel = new JSONModel(aDataTable);
     this.getView()?.setModel(oTableModel, "UserActivityLogData");
@@ -373,13 +384,33 @@ export default class UserDetail extends Controller {
       ],
     ) as ODataListBinding;
 
-    const aContextActPerD = await oUserActPerDate.requestContexts();
-    const aDataActPerDate = aContextActPerD.map((oContext) =>
-      oContext.getObject(),
-    );
+    const aDataActPerDate = await this.fetchAllData(oUserActPerDate);
 
     const oActPerDayModel = new JSONModel(aDataActPerDate);
     this.getView()?.setModel(oActPerDayModel, "ActPerDateData");
+  }
+
+  /**
+   * Fetch all data from OData using paging (skip + top)
+   */
+  private async fetchAllData(oBinding: ODataListBinding): Promise<any[]> {
+    const aAllContexts: any[] = [];
+    let iSkip = 0;
+    const iPageSize = 100;
+
+    while (true) {
+      const aContexts = await oBinding.requestContexts(iSkip, iPageSize);
+
+      if (aContexts.length === 0) break;
+
+      aAllContexts.push(...aContexts);
+
+      if (aContexts.length < iPageSize) break;
+
+      iSkip += iPageSize;
+    }
+
+    return aAllContexts.map((oContext) => oContext.getObject());
   }
 
   /**

@@ -146,7 +146,7 @@
                                     }
                                 }
                             }"
-                                id="loginChart" vizType="column" width="300px" height="300px">
+                                id="loginChart" vizType="column" width="300px" height="364px">
                                 <!-- Define data of chart -->
                                 <viz:dataset>
                                     <viz.data:FlattenedDataset id="colmunDataset"
@@ -181,11 +181,12 @@
                                 plotArea: {
                                     dataLabel: {
                                         visible: true,
-                                        type: 'percentage'
+                                        type: 'percentage',
+                                        hideWhenOverlap: true
                                     }
                                 }
                             }"
-                                id="tcodeChart" vizType="pie" width="500px" height="300px">
+                                id="tcodeChart" vizType="pie" width="500px" height="364px">
                                 <!-- Define data of chart -->
                                 <viz:dataset>
                                     <viz.data:FlattenedDataset id="pieDataset" data="{tCodeChart>/}">
@@ -215,14 +216,14 @@
                             <!-- DUMP - BAR CHART -->
                             <viz:VizFrame id="dumpChart"
                                 vizProperties="{
-                                title: { visible: true, text: 'User Dump Activity' },
+                                title: { visible: true, text: 'Top 10 Users by Dump Count' },
                                 legend: { visible: false },
                                 plotArea: {
                                     dataLabel: { visible: true },
                                     colorPalette: ['#fa8c16']
                                 }
                             }"
-                                vizType="bar" width="300px" height="300px">
+                                vizType="bar" width="300px" height="364px">
                                 <!-- Define data of chart -->
                                 <viz:dataset>
                                     <viz.data:FlattenedDataset id="barDataset" data="{dumpChart>/}">

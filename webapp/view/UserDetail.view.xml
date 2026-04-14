@@ -57,6 +57,7 @@
                 </VBox>
             </FlexBox>
         </f:headerContent>
+
         <!-- SECTIONS -->
         <f:sections>
             <!-- USER INFORMATION -->
@@ -196,43 +197,26 @@
                                     </viz:feeds>
                                 </viz:VizFrame>
 
-                                <!-- AUTH PER DAY - COLUMN CHART -->
-                                <viz:VizFrame id="AuthPerDayVizFrameId" height="300px" width="700px"
-                                    vizType="column"
+                                <!-- AUTH PER DAY - LINE CHART -->
+                                <viz:VizFrame
                                     vizProperties="{
-                                    title: {
-                                        text: 'User Log'
-                                    },
-                                    plotArea: {
-                                        dataLabel: {
-                                            visible: true,
-                                            formatString: '0'
-                                        }
-                                    },
-                                    valueAxis: {
-                                        label: {
-                                            formatString: '0'
-                                        }
-                                    },
-                                    legend: {
-                                        visible: true
-                                    }
-                                }">
-                                    <!-- Define data of chart -->
+                                    title: { visible: true, text: 'Activity of User' }
+                                }"
+                                    id="AuthPerDayVizFrameId" width="600px" height="400px" vizType="line">
                                     <viz:dataset>
                                         <viz.data:FlattenedDataset id="AuthPerDayDatasetId"
                                             data="{UserAuthLogPerDayData>/}">
                                             <!-- DIMENSION -->
                                             <viz.data:dimensions>
-                                                <viz.data:DimensionDefinition
-                                                    id="AuthPerDayDimLoginResultId" name="Date"
+                                                <viz.data:DimensionDefinition id="AuthPerDayDimLoginResultId"
+                                                    name="Date"
                                                     value="{UserAuthLogPerDayData>LoginDate}" />
                                             </viz.data:dimensions>
 
                                             <!-- MEASURE -->
                                             <viz.data:measures>
-                                                <viz.data:MeasureDefinition
-                                                    id="AuthPerDayMeasureCountId" name="Login Count"
+                                                <viz.data:MeasureDefinition id="AuthPerDayMeasureCountId"
+                                                    name="Login Count"
                                                     value="{UserAuthLogPerDayData>TotalLoginCount}" />
                                             </viz.data:measures>
                                         </viz.data:FlattenedDataset>
@@ -240,13 +224,14 @@
 
                                     <!-- Mapping dimension/measure into chart -->
                                     <viz:feeds>
-                                        <viz.feeds:FeedItem id="AuthPerDayFeedSizeId"
+                                      <viz.feeds:FeedItem id="AuthPerDayFeedSizeId"
                                             uid="categoryAxis" type="Dimension" values="Date" />
                                         <viz.feeds:FeedItem id="AuthPerDayFeedColorId"
                                             uid="valueAxis" type="Measure" values="Login Count" />
                                     </viz:feeds>
                                 </viz:VizFrame>
                             </HBox>
+
                             <!-- AUTHENTICATION -->
                             <Panel id="authFilterPanel" width="100%"
                                 headerText="{i18n>filter}"
@@ -427,7 +412,8 @@
                                     plotArea: {
                                         dataLabel: {
                                             visible: true,
-                                            type: 'percentage'
+                                            type: 'percentage',
+                                            hideWhenOverlap: true
                                         }
                                     }
                                 }"
@@ -548,7 +534,7 @@
                                         descending: true
                                     }
                                 }"
-                                    visibleRowCount="8" selectionMode="None"
+                                    visibleRowCount="8" selectionMode="Single"
                                     alternateRowColors="true" class="sapUiLargeMarginBottom">
                                     <!-- HEADER TOOLBAR -->
                                     <ui:extension>
@@ -671,8 +657,8 @@
                                                 text="{i18n>sentMailAlert}" />
                                             <ui:template>
                                                 <core:Icon id="ActivitySentMail"
-                                                    src="{= ${detailData>mail_sent} ? 'sap-icon://email' : 'sap-icon://less'}"
-                                                    color="{= ${detailData>mail_sent} ? 'Positive' : 'Neutral'}"
+                                                    src="{= ${UserActivityLogData>mail_sent} ? 'sap-icon://email' : 'sap-icon://less'}"
+                                                    color="{= ${UserActivityLogData>mail_sent} ? 'Positive' : 'Neutral'}"
                                                     size="1.5rem" />
                                             </ui:template>
                                         </ui:Column>
